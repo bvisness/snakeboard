@@ -12,9 +12,12 @@ NetworkTables.initialize()
 sd = NetworkTables.getTable("SmartDashboard")
 
 i = 0
+b = True
 while True:
     sd.putNumber("robotTime", i)
     sd.putString("robotTimeString", str(i) + " seconds")
+    sd.putBoolean("lightOn", b)
 
     time.sleep(1)
     i += 1
+    b = not b

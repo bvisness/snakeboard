@@ -1,17 +1,50 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { SimpleNumber } from '/components/widgets/SimpleNumber';
+import { NTContext } from '/context/NTContext';
+
+import { SimpleIndicator } from '/components/widgets/SimpleIndicator';
+import { SimpleText } from '/components/widgets/SimpleText';
 
 import { keyName } from '/util/keys';
+import { typeOf } from '/util/types';
 
-const typeToWidget = {
-  SimpleNumber: SimpleNumber,
-};
+function widgetComponent(widgetType) {
+  const components = {
+    SimpleIndicator: SimpleIndicator,
+    SimpleText: SimpleText,
+  };
+
+  return components[widgetType];
+}
+
+function widgetTypes(typeOfValue) {
+  switch (typeOfValue) {
+    case 'number':
+      return [
+        'SimpleText',
+      ];
+    case 'boolean':
+      return [
+        'SimpleIndicator',
+        'SimpleText',
+      ];
+    default:
+      return [
+        'SimpleText',
+      ];
+  }
+}
+
+function defaultType(value) {
+  return widgetTypes(typeOf(value))[0];
+}
 
 export function Widget(props) {
-  const [widgetType, setWidgetType] = useState('SimpleNumber');
+  const ntdata = useContext(NTContext);
+
+  const [widgetType, setWidgetType] = useState(defaultType(ntdata[props.ntkey]));
   
   const [isDragging, _setIsDraggingState] = useState(false);
   const [offset, setOffset] = useState([200, 200]);
@@ -54,7 +87,7 @@ export function Widget(props) {
     };
   }, []);
 
-  const WidgetType = typeToWidget[widgetType];
+  const WidgetComponent = widgetComponent(widgetType);
 
   return (
     <div
@@ -77,8 +110,8 @@ export function Widget(props) {
         <button onClick={ () => props.closeWidget(props.ntkey) }>X</button>
       </div>
       <div className="widget-body">
-        { WidgetType
-          ? <WidgetType ntkey={ props.ntkey } />
+        { WidgetComponent
+          ? <WidgetComponent ntkey={ props.ntkey } />
           : 'ERROR!'
         }
       </div>
