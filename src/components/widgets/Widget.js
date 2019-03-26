@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { SimpleNumber } from '/components/widgets/SimpleNumber';
@@ -63,7 +64,6 @@ export function Widget(props) {
           'dragging': isDragging,
         },
       )}
-      onMouseDown={ startDrag }
       style={{
         left: offset[0],
         top: offset[1],
@@ -71,10 +71,10 @@ export function Widget(props) {
     >
       <div className="widget-header">
         <button>=</button>
-        <div className="widget-title">
+        <div className="widget-title" onMouseDown={ startDrag }>
           { keyName(props.ntkey) }
         </div>
-        <button>X</button>
+        <button onClick={ () => props.closeWidget(props.ntkey) }>X</button>
       </div>
       <div className="widget-body">
         { WidgetType
@@ -85,3 +85,8 @@ export function Widget(props) {
     </div>
   );
 }
+
+Widget.propTypes = {
+  ntkey: PropTypes.string.isRequired,
+  closeWidget: PropTypes.func.isRequired,
+};

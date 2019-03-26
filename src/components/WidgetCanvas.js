@@ -7,10 +7,19 @@ export function WidgetCanvas() {
     '/SmartDashboard/robotTime': true,
   });
 
+  function closeWidget(key) {
+    const {[key]: undefined, ...newKeys} = widgetKeys;
+    setWidgetKeys(newKeys);
+  }
+
   return (
     <div className="widget-canvas">
       { Object.keys(widgetKeys).map(key => (
-        <Widget key={ key } ntkey={ key } />
+        <Widget
+          key={ key }
+          ntkey={ key }
+          closeWidget={ closeWidget }
+        />
       )) }
     </div>
   );
