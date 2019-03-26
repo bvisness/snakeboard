@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { DragDropContextProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
 import { NTContext } from '/context/NTContext';
 
 import { TreeView } from '/components/TreeView';
@@ -7,7 +10,7 @@ import { WidgetCanvas } from '/components/WidgetCanvas';
 import 'normalize.css';
 import '/style.scss';
 
-export function App() {
+function NTProvider(props) {
   const [ntdata, setNtdata] = useState({});
 
   useEffect(() => {
@@ -23,8 +26,18 @@ export function App() {
 
   return (
     <NTContext.Provider value={ ntdata }>
-      <TreeView />
-      <WidgetCanvas />
+      { props.children }
     </NTContext.Provider>
+  );
+}
+
+export function App() {
+  return (
+    <DragDropContextProvider backend={ HTML5Backend }>
+      <NTProvider>
+        <WidgetCanvas />
+        <TreeView />
+      </NTProvider>
+    </DragDropContextProvider>
   );
 }

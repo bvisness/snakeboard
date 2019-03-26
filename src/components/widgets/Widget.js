@@ -14,7 +14,7 @@ export function Widget(props) {
   const [widgetType, setWidgetType] = useState('SimpleNumber');
   
   const [isDragging, _setIsDraggingState] = useState(false);
-  const [offset, setOffset] = useState([0, 0]);
+  const [offset, setOffset] = useState([200, 200]);
   const isDraggingRef = useRef(false);
   const initialDragOffsetRef = useRef([0, 0]);
   const initialDragMousePositionRef = useRef([0, 0]);
