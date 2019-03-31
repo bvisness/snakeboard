@@ -77,6 +77,8 @@ export function Widget(props) {
       domRef.current.clientHeight,
     ]);
     setDragMode(mode);
+
+    props.moveToFront();
   }
 
   useEffect(() => {
@@ -127,6 +129,7 @@ export function Widget(props) {
         top: props.position[1],
         width: props.size && props.size[0],
         height: props.size && props.size[1],
+        zIndex: props.z,
       }}
       ref={ domRef }
     >
@@ -150,9 +153,12 @@ export function Widget(props) {
 
 Widget.propTypes = {
   ntkey: PropTypes.string.isRequired,
-  position: PropTypes.array.isRequired,
   type: PropTypes.string.isRequired,
+  position: PropTypes.array.isRequired,
+  size: PropTypes.array,
+  z: PropTypes.number.isRequired,
   close: PropTypes.func.isRequired,
   setPosition: PropTypes.func.isRequired,
   setSize: PropTypes.func.isRequired,
+  moveToFront: PropTypes.func.isRequired,
 };

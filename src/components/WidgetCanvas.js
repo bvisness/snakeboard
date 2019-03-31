@@ -46,6 +46,13 @@ export function WidgetCanvas(props) {
   const ntdata = useContext(NTContext);
 
   const [widgetState, setWidgetState, getWidgetState] = useStableState({});
+  const [widgetMaxZ, setWidgetMaxZ] = useState(0);
+
+  function newFrontZ() {
+    const newMaxZ = widgetMaxZ + 1;
+    setWidgetMaxZ(newMaxZ);
+    return newMaxZ;
+  }
 
   function addWidget(key, position = [200, 200]) {
     setWidgetState(widgetState => ({
@@ -54,6 +61,7 @@ export function WidgetCanvas(props) {
         type: defaultType(ntdata[key]),
         position: position,
         size: null,
+        z: newFrontZ(),
       },
       ...widgetState,
     }));
@@ -86,6 +94,16 @@ export function WidgetCanvas(props) {
     }));
   }
 
+  function moveWidgetToFront(key) {
+    setWidgetState(widgetState => ({
+      ...widgetState,
+      [key]: {
+        ...widgetState[key],
+        z: newFrontZ(),
+      },
+    }));
+  }
+
   function renderWidget(key) {
     const widgetData = widgetState[key];
 
@@ -96,6 +114,7 @@ export function WidgetCanvas(props) {
         close={ () => closeWidget(key) }
         setPosition={ position => setWidgetPosition(key, position) }
         setSize={ size => setWidgetSize(key, size) }
+        moveToFront={ () => moveWidgetToFront(key) }
       />
     );
   }
@@ -104,9 +123,14 @@ export function WidgetCanvas(props) {
   useEffect(() => {
     const storageKey = 'snakeboardWidgetState'
 
-    const previousState = window.localStorage.getItem(storageKey);
-    if (previousState) {
-      setWidgetState(JSON.parse(previousState));
+    const previousStateJson = window.localStorage.getItem(storageKey);
+    if (previousStateJson) {
+      const prevState = JSON.parse(previousStateJson);
+      setWidgetState(prevState);
+      setWidgetMaxZ(Object.values(prevState).reduce(
+        (max, current) => Math.max(max, current.z || 0),
+        0,
+      ));
     }
 
     function saveState() {
