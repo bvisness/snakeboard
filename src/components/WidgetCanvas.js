@@ -51,8 +51,9 @@ export function WidgetCanvas(props) {
     setWidgetState(widgetState => ({
       [key]: {
         ntkey: key,
-        position: position,
         type: defaultType(ntdata[key]),
+        position: position,
+        size: null,
       },
       ...widgetState,
     }));
@@ -75,6 +76,16 @@ export function WidgetCanvas(props) {
     }));
   }
 
+  function setWidgetSize(key, size) {
+    setWidgetState(widgetState => ({
+      ...widgetState,
+      [key]: {
+        ...widgetState[key],
+        size: size,
+      },
+    }));
+  }
+
   function renderWidget(key) {
     const widgetData = widgetState[key];
 
@@ -84,6 +95,7 @@ export function WidgetCanvas(props) {
         {...widgetData}
         close={ () => closeWidget(key) }
         setPosition={ position => setWidgetPosition(key, position) }
+        setSize={ size => setWidgetSize(key, size) }
       />
     );
   }

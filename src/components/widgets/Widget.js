@@ -11,6 +11,10 @@ import { keyName } from '/util/keys';
 import { typeOf } from '/util/types';
 import { useStableState } from '/util/hooks';
 
+const DRAG_NONE = 'none';
+const DRAG_POSITION = 'position';
+const DRAG_SIZE = 'size';
+
 function widgetComponent(widgetType) {
   const components = {
     SimpleIndicator: SimpleIndicator,
@@ -44,40 +48,61 @@ export function defaultType(value) {
 
 export function Widget(props) {
   const ntdata = useContext(NTContext);
+  const domRef = useRef(null);
   
-  const [isDragging, setIsDragging, getIsDragging] = useStableState(false);
+  const [dragMode, setDragMode, getDragMode] = useStableState(DRAG_NONE);
+  const [
+    initialDragMousePosition,
+    setInitialDragMousePosition,
+    getInitialDragMousePosition,
+  ] = useStableState([0, 0]);
   const [
     initialDragPosition,
     setInitialDragPosition,
     getInitialDragPosition,
   ] = useStableState([0, 0]);
   const [
-    initialDragMousePosition,
-    setInitialDragMousePosition,
-    getInitialDragMousePosition,
-  ] = useStableState([0, 0]);
+    initialDragSize,
+    setInitialDragSize,
+    getInitialDragSize,
+  ] = useStableState(null);
 
-  function startDrag(event) {
+  function startDrag(event, mode) {
+    event.preventDefault();
+
     setInitialDragPosition(props.position);
     setInitialDragMousePosition([event.screenX, event.screenY]);
-    setIsDragging(true);
+    setInitialDragSize([
+      domRef.current.clientWidth,
+      domRef.current.clientHeight,
+    ]);
+    setDragMode(mode);
   }
 
   useEffect(() => {
     function handleMouseMove(event) {
-      if (getIsDragging()) {
-        const initialOffset = getInitialDragPosition();
-        const initialMousePosition = getInitialDragMousePosition();
+      const initialMousePosition = getInitialDragMousePosition();
+      const deltaX = event.screenX - initialMousePosition[0];
+      const deltaY = event.screenY - initialMousePosition[1];
 
-        const newX = initialOffset[0] + (event.screenX - initialMousePosition[0]);
-        const newY = initialOffset[1] + (event.screenY - initialMousePosition[1]);
-        props.setPosition([newX, newY]);
+      if (getDragMode() === DRAG_POSITION) {
+        const initialOffset = getInitialDragPosition();
+        props.setPosition([
+          initialOffset[0] + deltaX,
+          initialOffset[1] + deltaY,
+        ]);
+      } else if (getDragMode() === DRAG_SIZE) {
+        const initialDragSize = getInitialDragSize();
+        props.setSize([
+          initialDragSize[0] + deltaX,
+          initialDragSize[1] + deltaY,
+        ]);
       }
     }
     window.addEventListener('mousemove', handleMouseMove);
 
     function handleMouseUp() {
-      setIsDragging(false);
+      setDragMode(DRAG_NONE);
     }
     window.addEventListener('mouseup', handleMouseUp);
 
@@ -94,17 +119,20 @@ export function Widget(props) {
       className={ classnames(
         'widget',
         {
-          'dragging': isDragging,
+          'dragging': dragMode === DRAG_POSITION,
         },
       )}
       style={{
         left: props.position[0],
         top: props.position[1],
+        width: props.size && props.size[0],
+        height: props.size && props.size[1],
       }}
+      ref={ domRef }
     >
       <div className="widget-header">
         <button>=</button>
-        <div className="widget-title" onMouseDown={ startDrag }>
+        <div className="widget-title" onMouseDown={ e => startDrag(e, DRAG_POSITION) }>
           { keyName(props.ntkey) }
         </div>
         <button onClick={ () => props.close() }>X</button>
@@ -115,6 +143,7 @@ export function Widget(props) {
           : 'ERROR!'
         }
       </div>
+      <div className="widget-resize-handle" onMouseDown={ e => startDrag(e, DRAG_SIZE) } />
     </div>
   );
 }
@@ -125,4 +154,5 @@ Widget.propTypes = {
   type: PropTypes.string.isRequired,
   close: PropTypes.func.isRequired,
   setPosition: PropTypes.func.isRequired,
+  setSize: PropTypes.func.isRequired,
 };
