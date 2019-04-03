@@ -1,3 +1,5 @@
+$shadow-color: rgba(0, 0, 0, 0.1);
+
 * {
     box-sizing: border-box;
 }
@@ -8,11 +10,63 @@ body {
 }
 
 .tree-view {
+    $drawer-width: 400px;
+
     position: absolute;
-    width: 50%;
     height: 100%;
     background-color: #fff;
-    padding: 20px;
+    box-shadow: 0px 2px 10px 0 $shadow-color;
+    z-index: 1;
+
+    display: flex;
+
+    .handle {
+        width: 17px;
+        height: 100%;
+        background-color: #fcfcfc;
+        position: relative;
+        border-left: 1px solid #ddd;
+
+        &:hover {
+            background-color: #f9f9f9;
+        }
+
+        &:active {
+            background-color: #f3f3f3;
+        }
+
+        .handle-label {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            width: 100vh;
+            transform: rotate(90deg);
+            transform-origin: 0 0;
+            font-size: 0.7em;
+            padding-left: 0.3em;
+            cursor: pointer;
+        }
+    }
+
+    .list-drawer {
+        width: 0;
+        transition: width 400ms ease-in-out;
+        position: relative;
+    }
+
+    .list-container {
+        width: $drawer-width;
+        padding: 20px;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    &.open {
+        .list-drawer {
+            width: $drawer-width;
+        }
+    }
 
     .tree-list {
         list-style-type: none;
@@ -88,6 +142,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 0;
 
     .widget-drop-target {
         position: absolute;
@@ -105,7 +160,6 @@ body {
 
 .widget {
     $widget-padding: 8px;
-    $shadow-color: rgba(0, 0, 0, 0.1);
 
     position: absolute;
     top: 20px;
@@ -139,7 +193,7 @@ body {
     }
 
     &.dragging {
-        box-shadow: 0px 2px 20px 0 $shadow-color;
+        box-shadow: 0px 2px 8px 0 $shadow-color;
 
         .widget-title {
             cursor: grabbing;

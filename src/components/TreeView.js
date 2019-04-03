@@ -71,6 +71,8 @@ TreeList.propTypes = {
 export function TreeView() {
   const ntdata = useContext(NTContext);
 
+  const [open, setOpen] = useState(false);
+
   function buildList(data) {
     const keys = Object.keys(data).sort();
 
@@ -104,8 +106,17 @@ export function TreeView() {
   }
 
   return (
-    <div className="tree-view">
-      { buildList(ntdata) }
+    <div className={ classnames('tree-view', { open: open }) }>
+      <div className="list-drawer">
+        <div className="list-container">
+          { buildList(ntdata) }
+        </div>
+      </div>
+      <div className="handle" onClick={ () => setOpen(!open) }>
+        <div className="handle-label">
+          Open / Close
+        </div>
+      </div>
     </div>
   );
 }
