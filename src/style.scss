@@ -1,9 +1,85 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #eee;
+    font-family: -apple-system,BlinkMacSystemFont,segoe ui,Helvetica,Arial,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol;
 }
 
 .tree-view {
     position: absolute;
+    width: 50%;
+    height: 100%;
+    background-color: #fff;
+    padding: 20px;
+
+    .tree-list {
+        list-style-type: none;
+        margin: 0;
+        padding-left: 1em;
+    }
+
+    li {
+        position: relative;
+    }
+
+    .tree-list-parent {
+        .toggle {
+            $width: 1em;
+            width: $width;
+            height: 1.2em;
+            position: absolute;
+            left: -$width;
+            top: 0;
+            text-align: center;
+
+            &::after {
+                $width: 0.7em;
+                $height: $width / 2 * 1.732;
+                $color: #999;
+
+                content: '';
+                border: $height solid;
+                border-width: $height $width/2 0;
+                border-color: $color transparent transparent;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-top: -$height / 2;
+                margin-left: -$width / 2;
+            }
+        }
+
+        &.collapsed {
+            .toggle {
+                transform: rotate(-90deg);
+            }
+
+            .tree-list {
+                display: none;
+            }
+        }
+    }
+
+    .tree-item {
+        display: flex;
+
+        > * {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tree-item-title {
+            flex-grow: 1;
+        }
+
+        .tree-preview {
+            width: 50%;
+            background-color: #eee;
+        }
+    }
 }
 
 .widget-canvas {
@@ -29,6 +105,7 @@ body {
 
 .widget {
     $widget-padding: 8px;
+    $shadow-color: rgba(0, 0, 0, 0.1);
 
     position: absolute;
     top: 20px;
@@ -36,7 +113,7 @@ body {
 
     min-height: 70px;
     
-    box-shadow: 0px 2px 3px 0 #ccc;
+    box-shadow: 0px 2px 3px 0 $shadow-color;
     border-radius: 4px;
     background-color: #fff;
     overflow: hidden;
@@ -62,7 +139,7 @@ body {
     }
 
     &.dragging {
-        box-shadow: 0px 2px 20px 0 #ccc;
+        box-shadow: 0px 2px 20px 0 $shadow-color;
 
         .widget-title {
             cursor: grabbing;

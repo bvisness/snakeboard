@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { DragSource } from 'react-dnd'
 
 import { NTContext } from '/context/NTContext';
@@ -24,16 +25,48 @@ function collect(connect, monitor) {
 
 function _treeItem(props) {
   return props.connectDragSource(
-    <li>
-      { keyName(props.ntkey) }
-      { props.children }
+    <li className="tree-item">
+      <div className="tree-item-title">{ keyName(props.ntkey) }</div>
+      <div className="tree-preview">{ props.ntvalue + '' }</div>
     </li>
   );
 }
 const TreeItem = DragSource(DragItemTypes.TreeItem, itemSource, collect)(_treeItem);
 TreeItem.propTypes = {
   ntkey: PropTypes.string.isRequired,
+  ntvalue: PropTypes.any,
+};
+
+function TreeList(props) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <ul className={ classnames('tree-list', props.className) }>
+      { Object.keys(props.subkeys).map(key => {
+        if (typeof props.subkeys[key] === 'object') {
+          return (
+            <li key={ key } className={ classnames('tree-list-parent', { collapsed: collapsed }) }>
+              { keyName(key) }
+              <div className="toggle" onClick={ () => setCollapsed(!collapsed) } />
+              <TreeList
+                ntkey={ key }
+                subkeys={ props.subkeys[key] }
+              />
+            </li>
+          );
+        } else {
+          return (
+            <TreeItem key={ key } ntkey={ key } ntvalue={ props.subkeys[key] } />
+          );
+        }
+      }) }
+    </ul>
+  );
 }
+TreeList.propTypes = {
+  ntkey: PropTypes.string.isRequired,
+  subkeys: PropTypes.object.isRequired,
+};
 
 export function TreeView() {
   const ntdata = useContext(NTContext);
@@ -67,22 +100,7 @@ export function TreeView() {
       }
     }
 
-    function objectToList(obj, key) {
-      return (
-        <ul id={ key } key={ key }>
-          { Object.keys(obj).map(key => (
-            <TreeItem key={ key } ntkey={ key }>
-              { typeof obj[key] === 'object'
-                ? objectToList(obj[key], key)
-                : ': ' + obj[key]
-              }
-            </TreeItem>
-          )) }
-        </ul>
-      );
-    }
-
-    return objectToList(nested, '');
+    return <TreeList ntkey="" subkeys={ nested } />;
   }
 
   return (

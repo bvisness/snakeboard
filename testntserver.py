@@ -16,6 +16,7 @@ b = True
 while True:
     sd.putNumber("robotTime", i)
     sd.putString("robotTimeString", str(i) + " seconds")
+    sd.putString("myTable/robotTimeString", str(i) + " seconds again")
     sd.putBoolean("lightOn", b)
 
     time.sleep(1)
