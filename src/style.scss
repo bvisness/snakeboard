@@ -87,6 +87,7 @@ body {
             left: -$width;
             top: 0;
             text-align: center;
+            cursor: pointer;
 
             &::after {
                 $width: 0.7em;
@@ -230,5 +231,19 @@ body {
         width: 20px;
         height: 20px;
         cursor: nwse-resize;
+    }
+}
+
+.widget-menu {
+    position: absolute;
+    z-index: 100;
+    background-color: #fff;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 2px 3px 0 $shadow-color;
+
+    label {
+        font-weight: 600;
+        margin-right: 0.4em;
     }
 }

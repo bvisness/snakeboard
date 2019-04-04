@@ -24,26 +24,8 @@ function widgetComponent(widgetType) {
   return components[widgetType];
 }
 
-function widgetTypes(typeOfValue) {
-  switch (typeOfValue) {
-    case 'number':
-      return [
-        'SimpleText',
-      ];
-    case 'boolean':
-      return [
-        'SimpleIndicator',
-        'SimpleText',
-      ];
-    default:
-      return [
-        'SimpleText',
-      ];
-  }
-}
-
 export function defaultType(value) {
-  return widgetTypes(typeOf(value))[0];
+  return 'SimpleText';
 }
 
 export function Widget(props) {
@@ -134,7 +116,7 @@ export function Widget(props) {
       ref={ domRef }
     >
       <div className="widget-header">
-        <button>=</button>
+        <button onClick={ e => props.showMenu([e.clientX, e.clientY]) }>=</button>
         <div className="widget-title" onMouseDown={ e => startDrag(e, DRAG_POSITION) }>
           { keyName(props.ntkey) }
         </div>
@@ -161,4 +143,5 @@ Widget.propTypes = {
   setPosition: PropTypes.func.isRequired,
   setSize: PropTypes.func.isRequired,
   moveToFront: PropTypes.func.isRequired,
+  showMenu: PropTypes.func.isRequired,
 };

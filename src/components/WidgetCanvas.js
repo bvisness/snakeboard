@@ -9,6 +9,7 @@ import { useStableState } from '/util/hooks';
 
 import { DragItemTypes } from '/util/constants';
 import { Widget, defaultType } from '/components/widgets/Widget';
+import { WidgetMenu } from '/components/widgets/WidgetMenu';
 
 const WidgetDropTarget = DropTarget(
   DragItemTypes.TreeItem,
@@ -42,11 +43,11 @@ WidgetDropTarget.propTypes = {
 };
 
 export function WidgetCanvas(props) {
-  // TODO: now everything rerenders whenever anything changes :(
   const ntdata = useContext(NTContext);
 
   const [widgetState, setWidgetState, getWidgetState] = useStableState({});
   const [widgetMaxZ, setWidgetMaxZ] = useState(0);
+  const [widgetMenuState, setWidgetMenuState] = useState(null);
 
   function newFrontZ() {
     const newMaxZ = widgetMaxZ + 1;
@@ -94,6 +95,16 @@ export function WidgetCanvas(props) {
     }));
   }
 
+  function setWidgetType(key, type) {
+    setWidgetState(widgetState => ({
+      ...widgetState,
+      [key]: {
+        ...widgetState[key],
+        type: type,
+      },
+    }));
+  }
+
   function moveWidgetToFront(key) {
     setWidgetState(widgetState => ({
       ...widgetState,
@@ -102,6 +113,13 @@ export function WidgetCanvas(props) {
         z: newFrontZ(),
       },
     }));
+  }
+
+  function showWidgetMenu(key, position) {
+    setWidgetMenuState({
+      key: key,
+      position: position,
+    });
   }
 
   function renderWidget(key) {
@@ -115,6 +133,7 @@ export function WidgetCanvas(props) {
         setPosition={ position => setWidgetPosition(key, position) }
         setSize={ size => setWidgetSize(key, size) }
         moveToFront={ () => moveWidgetToFront(key) }
+        showMenu={ position => showWidgetMenu(key, position) }
       />
     );
   }
@@ -140,6 +159,7 @@ export function WidgetCanvas(props) {
 
     function handleMouseUp() {
       saveState();
+      setWidgetMenuState(null);
     }
     window.addEventListener('mouseup', handleMouseUp);
 
@@ -158,6 +178,14 @@ export function WidgetCanvas(props) {
     <div className="widget-canvas">
       { Object.keys(widgetState).map(key => renderWidget(key)) }
       <WidgetDropTarget addWidget={ addWidget } />
+      { widgetMenuState &&
+        <WidgetMenu
+          ntkey={ widgetMenuState.key }
+          type={ widgetState[widgetMenuState.key].type }
+          position={ widgetMenuState.position }
+          setType={ type => setWidgetType(widgetMenuState.key, type) }
+        />
+      }
     </div>
   );
 }
