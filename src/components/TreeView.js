@@ -24,9 +24,11 @@ function collect(connect, monitor) {
 }
 
 function _treeItem(props) {
-  return props.connectDragSource(
+  return (
     <li className="tree-item">
-      <div className="tree-item-title">{ keyName(props.ntkey) }</div>
+      { props.connectDragSource(
+        <div className="tree-item-title">{ keyName(props.ntkey) }</div>
+      ) }
       <div className="tree-preview">{ props.ntvalue + '' }</div>
     </li>
   );

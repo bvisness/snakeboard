@@ -127,11 +127,11 @@ body {
 
         .tree-item-title {
             flex-grow: 1;
+            cursor: grab;
         }
 
         .tree-preview {
             width: 50%;
-            background-color: #eee;
         }
     }
 }
