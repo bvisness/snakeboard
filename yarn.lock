@@ -3670,6 +3670,13 @@ parcel-bundler@^1.12.3:
     v8-compile-cache "^2.0.0"
     ws "^5.1.1"
 
+parcel-plugin-html-externals@^0.1.2:
+  version "0.1.2"
+  resolved "https://nexus.wheniwork.com/repository/npm/parcel-plugin-html-externals/-/parcel-plugin-html-externals-0.1.2.tgz#130ef16855b700599d6d2b0d797f3eabdfb64d5f"
+  integrity sha512-ngyIlta99E7UvHTYQA3cKDUhj3aVfZO9+MmEwrMU9pD4paWvPvqfNRhUQg/xk2Alo+VwEMbZFmaONkrwI47tgg==
+  dependencies:
+    minimatch "^3.0.4"
+
 parse-asn1@^5.0.0:
   version "5.1.4"
   resolved "https://nexus.wheniwork.com/repository/npm/parse-asn1/-/parse-asn1-5.1.4.tgz#37f6628f823fbdeb2273b4d540434a22f3ef1fcc"

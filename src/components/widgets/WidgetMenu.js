@@ -1,10 +1,15 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { NTContext } from '/context/NTContext';
+import { NTData } from '/context/NTData';
 
 function widgetTypes(typeOfValue) {
   switch (typeOfValue) {
+    case 'string':
+      return [
+        { component: 'CameraView', name: 'Camera Feed' },
+        { component: 'SimpleText', name: 'Simple Text' },
+      ];
     case 'number':
       return [
         { component: 'SimpleText', name: 'Simple Text' },
@@ -22,7 +27,7 @@ function widgetTypes(typeOfValue) {
 }
 
 export function WidgetMenu(props) {
-  const ntdata = useContext(NTContext);
+  const ntdata = useContext(NTData);
 
   return (
     <div

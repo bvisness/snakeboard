@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DragSource } from 'react-dnd'
 
-import { NTContext } from '/context/NTContext';
+import { NTData } from '/context/NTData';
 
 import { keyName } from '/util/keys';
 import { DragItemTypes } from '/util/constants';
@@ -71,7 +71,7 @@ TreeList.propTypes = {
 };
 
 export function TreeView() {
-  const ntdata = useContext(NTContext);
+  const ntdata = useContext(NTData);
 
   const [open, setOpen] = useState(false);
 

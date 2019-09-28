@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { DropTarget } from 'react-dnd'
 
-import { NTContext } from '/context/NTContext';
+import { NTData } from '/context/NTData';
 
 import { useStableState } from '/util/hooks';
 
@@ -43,7 +43,7 @@ WidgetDropTarget.propTypes = {
 };
 
 export function WidgetCanvas(props) {
-  const ntdata = useContext(NTContext);
+  const ntdata = useContext(NTData);
 
   const [widgetState, setWidgetState, getWidgetState] = useStableState({});
   const [widgetMaxZ, setWidgetMaxZ] = useState(0);

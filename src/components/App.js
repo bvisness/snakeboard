@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import { NTContext } from '/context/NTContext';
+import { NTConnection } from '/context/NTConnection';
+import { NTData } from '/context/NTData';
 
+import { ConnectionIndicators } from '/components/ConnectionIndicators';
 import { TreeView } from '/components/TreeView';
 import { WidgetCanvas } from '/components/WidgetCanvas';
 
@@ -11,23 +13,49 @@ import 'normalize.css';
 import '/style.scss';
 
 function NTProvider(props) {
+  const [serverConnected, setServerConnected] = useState(false);
+  const [robotConnected, setRobotConnected] = useState(false);
   const [ntdata, setNtdata] = useState({});
 
-  useEffect(() => {
-    var ws = new WebSocket("ws://127.0.0.1:5678/");
-    ws.addEventListener('message', event => {
-      setNtdata(JSON.parse(event.data));
-    })
+  function resetNtdata() {
+    const result = {};
 
-    return () => {
-      ws.close();
-    };
+    const keys = NetworkTables.getKeys();
+    for (const key of keys) {
+      console.log(key, NetworkTables.containsKey(key));
+      result[key] = NetworkTables.getValue(key);
+    }
+
+    setNtdata(result);
+  }
+
+  useEffect(() => {
+    NetworkTables.addWsConnectionListener(connected => {
+      console.log("Websocket connected: " + connected);
+      setServerConnected(connected);
+      resetNtdata();
+    }, true);
+    NetworkTables.addRobotConnectionListener(function(connected){
+      console.log("Robot connected: " + connected);
+      setRobotConnected(connected);
+      resetNtdata();
+    }, true);
+    NetworkTables.addGlobalListener((key, value, isNew) => {
+      setNtdata(ntdata => ({...ntdata, [key]: value}));
+    }, true);
   }, []);
 
+  const connections = {
+    server: serverConnected,
+    robot: robotConnected,
+  };
+
   return (
-    <NTContext.Provider value={ ntdata }>
-      { props.children }
-    </NTContext.Provider>
+    <NTConnection.Provider value={ connections }>
+      <NTData.Provider value={ ntdata }>
+        { props.children }
+      </NTData.Provider>
+    </NTConnection.Provider>
   );
 }
 
@@ -37,6 +65,7 @@ export function App() {
       <NTProvider>
         <WidgetCanvas />
         <TreeView />
+        <ConnectionIndicators />
       </NTProvider>
     </DragDropContextProvider>
   );

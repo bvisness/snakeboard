@@ -10,7 +10,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 # TODO: Get a robot IP somehow
-NetworkTables.initialize(server='127.0.0.1')
+NetworkTables.initialize(server='10.21.75.2')
 
 def main():
     wsclients = set()

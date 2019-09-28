@@ -22,3 +22,6 @@ while True:
     time.sleep(1)
     i += 1
     b = not b
+
+    if i == 10:
+    	sd.putBoolean("wow", True)

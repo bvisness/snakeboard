@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { NTContext } from '/context/NTContext';
+import { NTData } from '/context/NTData';
 
 export function SimpleText(props) {
-  const ntdata = useContext(NTContext);
+  const ntdata = useContext(NTData);
 
   return (
     <div className="simple-text">

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { NTContext } from '/context/NTContext';
+import { NTData } from '/context/NTData';
 
+import { CameraView } from '/components/widgets/CameraView';
 import { SimpleIndicator } from '/components/widgets/SimpleIndicator';
 import { SimpleText } from '/components/widgets/SimpleText';
 
@@ -17,6 +18,7 @@ const DRAG_SIZE = 'size';
 
 function widgetComponent(widgetType) {
   const components = {
+    CameraView: CameraView,
     SimpleIndicator: SimpleIndicator,
     SimpleText: SimpleText,
   };
@@ -29,7 +31,7 @@ export function defaultType(value) {
 }
 
 export function Widget(props) {
-  const ntdata = useContext(NTContext);
+  const ntdata = useContext(NTData);
   const domRef = useRef(null);
   
   const [dragMode, setDragMode, getDragMode] = useStableState(DRAG_NONE);
