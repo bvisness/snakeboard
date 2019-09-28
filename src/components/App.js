@@ -17,28 +17,14 @@ function NTProvider(props) {
   const [robotConnected, setRobotConnected] = useState(false);
   const [ntdata, setNtdata] = useState({});
 
-  function resetNtdata() {
-    const result = {};
-
-    const keys = NetworkTables.getKeys();
-    for (const key of keys) {
-      console.log(key, NetworkTables.containsKey(key));
-      result[key] = NetworkTables.getValue(key);
-    }
-
-    setNtdata(result);
-  }
-
   useEffect(() => {
     NetworkTables.addWsConnectionListener(connected => {
       console.log("Websocket connected: " + connected);
       setServerConnected(connected);
-      resetNtdata();
     }, true);
     NetworkTables.addRobotConnectionListener(function(connected){
       console.log("Robot connected: " + connected);
       setRobotConnected(connected);
-      resetNtdata();
     }, true);
     NetworkTables.addGlobalListener((key, value, isNew) => {
       setNtdata(ntdata => ({...ntdata, [key]: value}));

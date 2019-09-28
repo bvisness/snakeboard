@@ -106,6 +106,7 @@ export function Widget(props) {
         'widget',
         {
           'dragging': dragMode === DRAG_POSITION,
+          'key-missing': !ntdata.hasOwnProperty(props.ntkey),
         },
       )}
       style={{

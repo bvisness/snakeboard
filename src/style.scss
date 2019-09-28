@@ -201,6 +201,10 @@ body {
     }
   }
 
+  &.key-missing {
+    opacity: 0.5;
+  }
+
   .widget-body {
     position: relative;
     height: 100%;
