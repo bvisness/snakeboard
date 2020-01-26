@@ -1,12 +1,14 @@
 {
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "concurrently npm:pynetworktables2js npm:watch",
+    "pynetworktables2js": "cd dist && python3 -m pynetworktables2js",
     "watch": "parcel watch src/index.html"
   },
   "externals": {
     "/networktables/**/*": false
   },
   "devDependencies": {
+    "concurrently": "^5.0.2",
     "parcel-bundler": "^1.12.3",
     "parcel-plugin-html-externals": "^0.1.2",
     "sass": "^1.17.3"
